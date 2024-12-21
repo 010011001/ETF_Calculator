@@ -90,8 +90,12 @@ def etf_calculator_month(future, result, amount1, amount, day, notice, indicator
         return current_bill_N, current_bill_Y, notice
 
 def etf_calculator_day(result, amount):
-    per_day = amount / 30
-    return round(result.day * per_day, 2)
+    day = result + relativedelta(days =+ 1)
+    if day.day == 1:
+        return round(amount, 2)
+    else:
+        per_day = amount / 30
+        return round(result.day * per_day, 2)
 
 def day_notice(amount):
     today = datetime.today()
