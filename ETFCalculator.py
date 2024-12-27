@@ -94,9 +94,10 @@ def etf_calculator_day(result, amount):
     if day.day == 1:
         return round(amount, 2)
     else:
-        per_day = amount / 30
+        num_days = calendar.monthrange(result.year, result.month)[1]
+        per_day = amount / num_days
         return round(result.day * per_day, 2)
-
+        
 def day_notice(amount):
     today = datetime.today()
     per_day = amount / 30
