@@ -4,49 +4,77 @@ import calendar
 import sys, subprocess
 
 def main():
-    date = datetime.strptime(input("Please enter the start date 'YYYY-MM-DD' format: "), "%Y-%m-%d")
-    
-    month = int(input("Please enter how many months: "))
-    future_month = future_date(date, month)
-    months_difference = remaining_months(future_month)
-    remainingdays = remaining_days(months_difference, future_month)
-    
-    date1 = datetime.strftime(date, "%B %d, %Y")
-    result1 = datetime.strftime(future_month, "%B %d, %Y")
-    print(f"\nThe contract started on {date1} after {month} month is: {result1}")
-    
-    print(f"The contract left: {months_difference} month (includes current month) and {remainingdays} days\n\n")
+    try:
+        while True:
+            try:
+                date = datetime.strptime(input("Please enter the start date 'YYYY-MM-DD' format: "), "%Y-%m-%d")
+                break
+            except ValueError:
+                print("Invalid date format. Please try again.")
+        
+        while True:
+            try:
+                month = int(input("Please enter how many months: "))
+                break
+            except ValueError:
+                print("Invalid number. Please enter an integer.")
+        
+        future_month = future_date(date, month)
+        months_difference = remaining_months(future_month)
+        remainingdays = remaining_days(months_difference, future_month)
+        
+        date1 = datetime.strftime(date, "%B %d, %Y")
+        result1 = datetime.strftime(future_month, "%B %d, %Y")
+        print(f"\nThe contract started on {date1} after {month} month is: {result1}")
+        
+        print(f"The contract left: {months_difference} month (includes current month) and {remainingdays} days\n\n")
 
-    ETF = input("Do you wish to calculate the possible ETF? Y/N: ").lower()
-    if ETF == "y":
-        amount1 = 0.00
-        amount = float(input("How much is the contract amount?: "))
-        indicator = input("Is the next months bill generated? Y/N: ").lower()
-        amount1 = float(input("How much is the outstanding balance? 'if paid put 0': "))
-        day_etf = etf_calculator_day(future_month, amount)
-        notice = day_notice(amount)
-        etf = etf_calculator_month(future_month, months_difference, amount1, amount, day_etf, notice,indicator)
-        if etf[0] == etf[1]:
-            print(f"\n\nThe final bill is: {etf[1]}")
-            print(f"30 day Notice: {etf[2]}\n\n")
+        ETF = input("Do you wish to calculate the possible ETF? Y/N: ").lower()
+        if ETF == "y":
+            amount1 = 0.00
+            while True:
+                try:
+                    amount = float(input("How much is the contract amount?: "))
+                    break
+                except ValueError:
+                    print("Invalid amount. Please enter a number.")
+            
+            indicator = input("Is the next months bill generated? Y/N: ").lower()
+            
+            while True:
+                try:
+                    amount1 = float(input("How much is the outstanding balance? 'if paid put 0': "))
+                    break
+                except ValueError:
+                    print("Invalid amount. Please enter a number.")
+            
+            day_etf = etf_calculator_day(future_month, amount)
+            notice = day_notice(amount)
+            etf = etf_calculator_month(future_month, months_difference, amount1, amount, day_etf, notice, indicator)
+            if etf[0] == etf[1]:
+                print(f"\n\nThe final bill is: {etf[1]}")
+                print(f"30 day Notice: {etf[2]}\n\n")
+            else:
+                print(f"\n\nThe final bill is: {etf[0]}")
+                print(f"30 day Notice: {etf[2]}\n\n")
         else:
-            print(f"\n\nThe final bill is: {etf[0]}")
-            print(f"30 day Notice: {etf[2]}\n\n")
-    else:
-        print("Thank you for using the program\n\n")
-    
-    R = input("Rerun the program? Y/N: ").lower()
+            print("Thank you for using the program\n\n")
+        
+        R = input("Rerun the program? Y/N: ").lower()
 
-    if R == "y":
-        subprocess.run('cls', shell=True)
+        if R == "y":
+            subprocess.run('cls', shell=True)
+            main()
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        print("Restarting the program...\n")
         main()
-
 
 #This function will return the future date with param of start date and the months
 def future_date(start_date, month):
-    #This code will compute the futer months base on the month user input    
+    #This code will compute the futer months base on the month user input    
     future_date = start_date + relativedelta(months =+ month, days =- 1)
-    #returning the the future date    
+    #returning the the future date    
     return future_date
 
 def remaining_months(futuredate):
