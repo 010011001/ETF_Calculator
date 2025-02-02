@@ -80,15 +80,16 @@ def future_date(start_date, month):
 def remaining_months(futuredate):
     today = datetime.today()
     if futuredate.year >= today.year:
-        if futuredate.month > today.month:
-            return (futuredate.year - today.year) * 12 + (futuredate.month - today.month)
-        else:
+        if futuredate.year == today.year and futuredate.month < today.month:
             return 0
+        else:
+            return (futuredate.year - today.year) * 12 + (futuredate.month - today.month)
     else:
         return 0
 
 def remaining_days(month_result, future_date):
-    if month_result <= 1:
+    today = datetime.today()
+    if month_result < 1 and today.day > future_date.day:
         return 0
     else:
         return future_date.day
@@ -96,7 +97,12 @@ def remaining_days(month_result, future_date):
 def etf_calculator_month(future, result, amount1, amount, day, notice, indicator):
     today = datetime.today()
     if future.year >= today.year:
-        if future.month > today.month:
+        if future.year == today.year and future.month <= today.month:
+            current_bill_N = round(amount1 + notice, 2)
+            current_bill_Y = round(notice, 2)
+            notice = round(amount1 + notice, 2)
+            return current_bill_N, current_bill_Y, notice
+        else:
             if indicator == 'y':
                 current_bill_N = round((result - 2) * amount + amount1 + day, 2)
                 current_bill_Y = round((result - 1) * amount + day, 2)
@@ -107,11 +113,6 @@ def etf_calculator_month(future, result, amount1, amount, day, notice, indicator
                 current_bill_Y = round((result - 1) * amount + day, 2)
                 notice = "Still in a contract"
                 return current_bill_N, current_bill_Y, notice
-        else:
-            current_bill_N = round(amount1 + notice, 2)
-            current_bill_Y = round(notice, 2)
-            notice = round(amount1 + notice, 2)
-            return current_bill_N, current_bill_Y, notice
     else:
         current_bill_N = round(amount1 + notice, 2)
         current_bill_Y = round(notice, 2)
